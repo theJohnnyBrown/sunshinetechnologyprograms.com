@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunshine Technology Programs — Insurance & Financial Workflow Engineering</title>
+  <meta name="description" content="Senior engineering support for system integrators delivering regulated insurance and financial workflows. Enrollment pipelines, Airflow orchestration, deterministic decision systems.">
+  <meta name="keywords" content="insurance workflow engineering, enrollment system consulting, Airflow enterprise consulting, regulated financial data pipelines, system integrator subcontract support">
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #3D9DD6;
+      --teal:       #2EC4B6;
+      --green:      #8DB83A;
+      --orange:     #E87A2A;
+      --dark:       #1A2E1A;
+      --off-white:  #F7F7F5;
+      --border:     #e2e8e2;
+      --text:       #1A2E1A;
+      --text-muted: #5a6b5a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 3px solid var(--green);
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--dark);
+    }
+
+    .nav-logo span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-cta {
+      background: var(--orange);
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.15s;
+    }
+
+    .nav-cta:hover { background: #d06820; }
+
+    /* ─── Hero ─────────────────────────────────────────────── */
+    .hero {
+      background: url('img/sunshine_hero.jpg') center 65% / cover no-repeat;
+      color: #fff;
+      padding: 96px 48px;
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Gradient overlay: opaque on left for text, fades to transparent on right */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right,
+        rgba(61,157,214,0.82) 0%,
+        rgba(61,157,214,0.65) 40%,
+        rgba(46,196,182,0.30) 70%,
+        rgba(46,196,182,0.05) 100%);
+      z-index: 0;
+    }
+
+    .hero-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+      max-width: 580px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0.9;
+      max-width: 520px;
+      margin-bottom: 12px;
+    }
+
+    .hero p.tagline {
+      font-size: 1rem;
+      font-style: italic;
+      opacity: 0.75;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: #d06820; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* ─── Section wrapper ──────────────────────────────────── */
+    section {
+      padding: 80px 48px;
+    }
+
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .section-header {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-body {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    /* ─── Photo strip (full-width between sections) ─────────── */
+    .photo-strip {
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+      display: block;
+    }
+
+    .photo-strip img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+    }
+
+    /* Subtle teal tint overlay */
+    .photo-strip::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(46, 196, 182, 0.12);
+      pointer-events: none;
+    }
+
+    /* ─── Who We Serve ─────────────────────────────────────── */
+    .section-serve {
+      background: var(--off-white);
+      border-top: 4px solid var(--green);
+    }
+
+    .serve-split {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .serve-intro {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .serve-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 24px 0 32px;
+    }
+
+    .serve-list li {
+      background: #fff;
+      border-left: 4px solid var(--teal);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .serve-footer {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--blue);
+    }
+
+    .serve-photo {
+      border-radius: 14px;
+      overflow: hidden;
+      height: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+    }
+
+    .serve-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    /* ─── Problems ─────────────────────────────────────────── */
+    .section-problems {
+      background: var(--dark);
+      color: #fff;
+      border-top: 4px solid var(--orange);
+    }
+
+    .section-problems .section-label { color: var(--teal); }
+    .section-problems .section-header { color: #fff; }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .problem-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 3px solid var(--orange);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .problem-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .problem-card p, .problem-card li {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+    }
+
+    .problem-card ul {
+      list-style: none;
+      margin: 8px 0;
+    }
+
+    .problem-card ul li::before {
+      content: '→ ';
+      color: var(--teal);
+    }
+
+    .problem-card .resolution {
+      margin-top: 16px;
+      font-style: italic;
+      color: var(--teal);
+      font-size: 0.85rem;
+    }
+
+    /* ─── What We Do ───────────────────────────────────────── */
+    .section-services {
+      border-top: 4px solid var(--blue);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .service-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .service-card:nth-child(1)::before { background: var(--blue); }
+    .service-card:nth-child(2)::before { background: var(--teal); }
+    .service-card:nth-child(3)::before { background: var(--green); }
+
+    .service-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+
+    .service-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .service-card ul li {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .service-card ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+    }
+
+    /* ─── Why Us ───────────────────────────────────────────── */
+    .section-why {
+      background: var(--off-white);
+      border-top: 4px solid var(--green);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    .why-intro {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+
+    .why-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .why-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .why-list li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .why-callout {
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      color: #fff;
+      border-radius: 12px;
+      padding: 36px;
+    }
+
+    .why-callout h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .why-callout p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+
+    /* ─── Engagement ───────────────────────────────────────── */
+    .section-engagement {
+      border-top: 4px solid var(--teal);
+    }
+
+    .engagement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .engagement-item {
+      background: var(--off-white);
+      border-radius: 8px;
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--teal);
+    }
+
+    .engagement-item p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .engagement-note {
+      margin-top: 36px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      border-left: 4px solid var(--green);
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+
+    /* ─── Experience ───────────────────────────────────────── */
+    .section-experience {
+      background:
+        linear-gradient(rgba(26,46,26,0.72), rgba(26,46,26,0.72)),
+        url('img/tree.png') center / cover;
+      color: #fff;
+      border-top: 4px solid var(--teal);
+    }
+
+    .section-experience .section-label { color: var(--green); }
+    .section-experience .section-header { color: #fff; }
+
+    .experience-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 36px;
+    }
+
+    .experience-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .experience-list li:last-child { border-bottom: none; }
+
+    .exp-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* ─── Final CTA ────────────────────────────────────────── */
+    .section-cta {
+      background:
+        linear-gradient(135deg, rgba(61,157,214,0.72) 0%, rgba(46,196,182,0.72) 100%),
+        url('img/baseball.png') center / cover;
+      color: #fff;
+      text-align: center;
+      padding: 96px 48px;
+    }
+
+    .section-cta p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      opacity: 0.9;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .section-cta p em {
+      font-style: normal;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    /* ─── Responsive ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .serve-split { grid-template-columns: 1fr; }
+      .serve-photo { height: 260px; }
+    }
+
+    @media (max-width: 700px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .hero { padding: 64px 24px; min-height: auto; }
+      .photo-strip { height: 200px; }
+      footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Nav ──────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">Sunshine <span>Technology Programs</span></div>
+  <ul class="nav-links">
+    <li><a href="#serve">Who We Serve</a></li>
+    <li><a href="#problems">Problems We Solve</a></li>
+    <li><a href="#services">What We Do</a></li>
+    <li><a href="#engagement">Engagement</a></li>
+  </ul>
+  <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="nav-cta">Schedule a Discussion</a>
+</nav>
+
+<!-- ─── Hero ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Insurance &amp; Financial Systems</div>
+    <h1>Stability for Regulated Insurance and Financial Delivery</h1>
+    <p>We support system integrators executing complex enrollment, underwriting, and approve-or-deny workflows under real-world delivery pressure.</p>
+    <p class="tagline">When the contract is signed and execution risk is real, we help you deliver.</p>
+    <div class="hero-actions">
+      <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="btn-primary">Schedule a Discussion</a>
+      <a href="#serve" class="btn-secondary">See How We Support Integrators</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Who We Serve ──────────────────────────────────────────── -->
+<section class="section-serve" id="serve">
+  <div class="section-inner serve-split">
+    <div class="serve-content">
+      <div class="section-label">Who We Serve</div>
+      <h2 class="section-header">Built for System Integrators Under Delivery Pressure</h2>
+      <p class="serve-intro">You have already won the contract.<br>Now you must deliver.</p>
+      <p class="section-body">We work with system integrators supporting insurance carriers, financial platforms, and benefits administrators where:</p>
+      <ul class="serve-list">
+        <li>Customer data flows through multi-step decision pipelines</li>
+        <li>Regulatory and audit exposure is real</li>
+        <li>Vendor chains are layered</li>
+        <li>Margin pressure is constant</li>
+        <li>Escalation risk cannot be ignored</li>
+      </ul>
+      <p class="serve-footer">We operate as senior engineering support inside those environments.</p>
+    </div>
+    <div class="serve-photo">
+      <img src="img/Park.png" alt="Florida park with palm trees and pond">
+    </div>
+  </div>
+</section>
+
+<!-- ─── Photo break: Water ────────────────────────────────────── -->
+<div class="photo-strip">
+  <img src="img/Water.png" alt="">
+</div>
+
+<!-- ─── Problems ─────────────────────────────────────────────── -->
+<section class="section-problems" id="problems">
+  <div class="section-inner">
+    <div class="section-label">Where Delivery Gets Fragile</div>
+    <h2 class="section-header">The Problems We Solve</h2>
+    <div class="problem-grid">
+
+      <div class="problem-card">
+        <h3>Fragile Enrollment &amp; Application Pipelines</h3>
+        <ul>
+          <li>Approve or deny logic becomes difficult to trace</li>
+          <li>Edge cases accumulate</li>
+          <li>Reprocessing is painful</li>
+          <li>Audit defensibility is weak</li>
+        </ul>
+        <p class="resolution">We stabilize deterministic decision workflows.</p>
+      </div>
+
+      <div class="problem-card">
+        <h3>Workflow Orchestration Under Strain</h3>
+        <ul>
+          <li>Airflow DAGs fail</li>
+          <li>Dependencies become opaque</li>
+          <li>Cross-team coordination slows delivery</li>
+          <li>Re-runs introduce risk</li>
+        </ul>
+        <p class="resolution">We redesign and harden orchestration layers.</p>
+      </div>
+
+      <div class="problem-card">
+        <h3>Margin Erosion From Rework</h3>
+        <ul>
+          <li>Repeated debugging cycles</li>
+          <li>Production firefighting</li>
+          <li>Client escalations</li>
+          <li>Unplanned resource allocation</li>
+        </ul>
+        <p class="resolution">We reduce rework by clarifying system structure and failure handling.</p>
+      </div>
+
+      <div class="problem-card">
+        <h3>Multi-Vendor Communication Friction</h3>
+        <p style="margin-bottom:12px;">Enterprise client → Prime vendor → Sub-integrator → Specialist subcontractor</p>
+        <p>Coordination failures slow progress.</p>
+        <p class="resolution">We understand layered delivery structures and operate quietly within them.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Services ──────────────────────────────────────────────── -->
+<section class="section-services" id="services">
+  <div class="section-inner">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-header">Senior Engineering Support for Regulated Decision Systems</h2>
+    <div class="services-grid">
+
+      <div class="service-card">
+        <h3>Insurance &amp; Financial Decision Pipelines</h3>
+        <ul>
+          <li>Enrollment and eligibility workflows</li>
+          <li>Underwriting data processing</li>
+          <li>Claims and adjudication pipelines</li>
+          <li>Deterministic rules engine design</li>
+          <li>Replayable and auditable decision logic</li>
+        </ul>
+      </div>
+
+      <div class="service-card">
+        <h3>Data &amp; Workflow Infrastructure</h3>
+        <ul>
+          <li>Airflow architecture and DAG optimization</li>
+          <li>ETL and event-driven processing systems</li>
+          <li>Failure isolation and recovery design</li>
+          <li>Observability and monitoring implementation</li>
+          <li>Dependency mapping across teams</li>
+        </ul>
+      </div>
+
+      <div class="service-card">
+        <h3>High-Leverage Engineering Capability</h3>
+        <ul>
+          <li>Clojure and functional programming systems</li>
+          <li>Strongly structured data transformations</li>
+          <li>Cloud-native distributed systems</li>
+          <li>Enterprise API integration</li>
+        </ul>
+        <p style="margin-top:20px; font-size:0.82rem; color:var(--text-muted); font-style:italic;">
+          We provide scarce senior capability where execution risk is high.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Why Us ────────────────────────────────────────────────── -->
+<section class="section-why" id="why">
+  <div class="section-inner">
+    <div class="section-label">Why Integrators Engage Us</div>
+    <h2 class="section-header">We Reduce Execution Risk</h2>
+    <div class="why-grid">
+      <div>
+        <p class="why-intro">System integrators engage us when delivery is at risk and the margin for error is gone.</p>
+        <ul class="why-list">
+          <li>Delivery is behind schedule</li>
+          <li>Escalation risk is rising</li>
+          <li>The workflow layer is fragile</li>
+          <li>Scarce engineering skills are required</li>
+          <li>Deterministic correctness is essential</li>
+        </ul>
+      </div>
+      <div class="why-callout">
+        <h3>How We Integrate</h3>
+        <p>We do not require heavy onboarding. We integrate quickly into structured vendor environments and focus on stabilizing the system without increasing organizational noise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Engagement ────────────────────────────────────────────── -->
+<section class="section-engagement" id="engagement">
+  <div class="section-inner">
+    <div class="section-label">Engagement Model</div>
+    <h2 class="section-header">Integrator-Friendly Engagement</h2>
+    <div class="engagement-grid">
+      <div class="engagement-item"><p>Subcontracting under prime SIs</p></div>
+      <div class="engagement-item"><p>Specialist augmentation for regulated workflows</p></div>
+      <div class="engagement-item"><p>Short-term stabilization engagements</p></div>
+      <div class="engagement-item"><p>Architecture review &amp; remediation</p></div>
+      <div class="engagement-item"><p>Long-term senior technical support</p></div>
+    </div>
+    <p class="engagement-note">
+      Sunshine Technology Programs LLC is an American company, founded and operated in the United States, experienced within enterprise procurement and subcontract frameworks.<br><strong>We are contract-ready and vendor-chain aware.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ─── Experience ────────────────────────────────────────────── -->
+<section class="section-experience" id="experience">
+  <div class="section-inner">
+    <div class="section-label">Representative Experience</div>
+    <h2 class="section-header">Experience in Complex Delivery Environments</h2>
+    <ul class="experience-list">
+      <li><div class="exp-dot"></div><span>Insurance enrollment systems supporting high-volume customer data processing</span></li>
+      <li><div class="exp-dot"></div><span>Financial application and underwriting pipelines with strict correctness requirements</span></li>
+      <li><div class="exp-dot"></div><span>Multi-layer vendor engagements involving enterprise clients and global integrators</span></li>
+      <li><div class="exp-dot"></div><span>Production systems requiring audit defensibility and operational transparency</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ─── Final CTA ─────────────────────────────────────────────── -->
+<section class="section-cta" id="cta">
+  <p>
+    When delivery must succeed without escalation,<br>
+    and regulated decision pipelines must be correct,<br>
+    <em>we should talk.</em>
+  </p>
+  <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="btn-primary">Schedule a Discussion</a>
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Sunshine Technology Programs LLC</div>
+  <div>American-Owned &nbsp;·&nbsp; U.S. Based &nbsp;·&nbsp; Contract-Ready &nbsp;·&nbsp; Vendor-Chain Aware</div>
+</footer>
+
+</body>
+</html>
