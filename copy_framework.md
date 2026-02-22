@@ -27,7 +27,7 @@ Schedule a Technical Discussion
 See How We Support Integrators
 
 ---
-
+the
 ## SECTION 1 – WHO WE SERVE
 
 **Header**
