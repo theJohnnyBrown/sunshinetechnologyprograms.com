@@ -425,6 +425,23 @@
       border-top: 4px solid var(--green);
     }
 
+    .stamp {
+      position: absolute;
+      top: -87px;
+      right: -24px;
+      width: 175px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @media (max-width: 768px) {
+      .stamp {
+        width: 110px;
+        top: -42px;
+        right: -16px;
+      }
+    }
+
     .why-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -470,6 +487,8 @@
       color: #fff;
       border-radius: 12px;
       padding: 36px;
+      position: relative;
+      overflow: visible;
     }
 
     .why-callout h3 {
@@ -800,6 +819,7 @@
         </ul>
       </div>
       <div class="why-callout">
+        <img src="img/licensed%20and%20insured.png" alt="Licensed and Insured" class="stamp">
         <h3>How We Integrate</h3>
         <p>We do not require heavy onboarding. We integrate quickly into structured vendor environments and focus on stabilizing the system without increasing organizational noise.</p>
       </div>
