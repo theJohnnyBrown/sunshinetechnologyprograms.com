@@ -48,7 +48,7 @@ We work with system integrators supporting insurance carriers, financial platfor
 • Margin pressure is constant
 • Escalation risk cannot be ignored
 
-We operate as senior engineering support inside those environments.
+We operate as senior development support inside those environments.
 
 ---
 
@@ -110,7 +110,7 @@ We understand layered delivery structures and operate quietly within them.
 
 **Header**
 
-Senior Engineering Support for Regulated Decision Systems
+Senior Development Support for Regulated Decision Systems
 
 ### Insurance & Financial Decision Pipelines
 
@@ -132,7 +132,7 @@ Senior Engineering Support for Regulated Decision Systems
 
 ---
 
-### High-Leverage Engineering Capability
+### High-Leverage Development Capability
 
 • Functional programming systems
 • Strongly structured data transformations
@@ -154,7 +154,7 @@ System integrators engage us when:
 • Delivery is behind schedule
 • Escalation risk is rising
 • The workflow layer is fragile
-• Scarce engineering skills are required
+• Scarce development skills are required
 • Deterministic correctness is essential
 
 We do not require heavy onboarding.
@@ -220,7 +220,7 @@ Schedule a Discussion
 6. Fast-loading static site preferred
 7. SEO emphasis:
 
-   * Insurance workflow engineering
+   * Insurance workflow development
    * Enrollment system consulting
    * Airflow enterprise consulting
    * Regulated financial data pipelines
