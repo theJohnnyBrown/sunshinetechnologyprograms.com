@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HL7 FHIR API Development for CMS Interoperability Compliance — Sunshine Technology Programs</title>
+  <meta name="description" content="HL7 FHIR R4 API implementation for CMS interoperability compliance. HAPI FHIR server deployment, Patient Access API, Provider Access API, Payer-to-Payer exchange, and Prior Authorization APIs under CMS-9115-F and CMS-0057-F.">
+  <meta name="keywords" content="HL7 FHIR API development, HAPI FHIR server implementation, CMS interoperability compliance, CMS-0057-F prior authorization API, Patient Access API, FHIR R4 consulting, US Core, CARIN Blue Button, Da Vinci implementation guides, SMART on FHIR, Bulk FHIR export">
+  <link rel="canonical" href="https://sunshinetechnologyprograms.com/fhir/">
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #3D9DD6;
+      --teal:       #2EC4B6;
+      --green:      #8DB83A;
+      --orange:     #E87A2A;
+      --dark:       #1A2E1A;
+      --off-white:  #F7F7F5;
+      --border:     #e2e8e2;
+      --text:       #1A2E1A;
+      --text-muted: #5a6b5a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 3px solid var(--green);
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      color: var(--dark);
+    }
+
+    .nav-logo span { color: var(--blue); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-cta {
+      background: var(--orange);
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.15s;
+    }
+
+    .nav-cta:hover { background: #d06820; }
+
+    /* ─── Hero ─────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--teal) 100%);
+      color: #fff;
+      padding: 96px 48px;
+      position: relative;
+      overflow: hidden;
+      min-height: 440px;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 4px;
+      margin-bottom: 28px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+      max-width: 640px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0.9;
+      max-width: 560px;
+      margin-bottom: 12px;
+    }
+
+    .hero p.tagline {
+      font-size: 1rem;
+      font-style: italic;
+      opacity: 0.75;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 7px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: #d06820; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 7px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* ─── Section wrapper ──────────────────────────────────── */
+    section {
+      padding: 80px 48px;
+    }
+
+    .section-inner {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .section-header {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 32px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-body {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    /* ─── Mandate section ──────────────────────────────────── */
+    .section-mandate {
+      background: var(--off-white);
+      border-top: 4px solid var(--green);
+    }
+
+    .mandate-intro {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 24px;
+      line-height: 1.6;
+      max-width: 720px;
+    }
+
+    .mandate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .mandate-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      padding: 26px;
+    }
+
+    .mandate-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .mandate-card .rule {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: rgba(61,157,214,0.1);
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .mandate-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    .mandate-footer {
+      margin-top: 36px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      border-left: 4px solid var(--green);
+      padding-left: 20px;
+      line-height: 1.7;
+    }
+
+    /* ─── Build section (dark) ─────────────────────────────── */
+    .section-build {
+      background: var(--dark);
+      color: #fff;
+      border-top: 4px solid var(--orange);
+    }
+
+    .section-build .section-label { color: var(--teal); }
+    .section-build .section-header { color: #fff; }
+    .section-build .section-body { color: rgba(255,255,255,0.7); max-width: 720px; }
+
+    .build-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .build-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: 3px solid var(--orange);
+      border-radius: 8px;
+      padding: 28px;
+    }
+
+    .build-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .build-card ul {
+      list-style: none;
+      margin: 8px 0;
+    }
+
+    .build-card li {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+    }
+
+    .build-card ul li::before {
+      content: '→ ';
+      color: var(--teal);
+    }
+
+    /* ─── Standards section ────────────────────────────────── */
+    .section-standards {
+      border-top: 4px solid var(--blue);
+    }
+
+    .standards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .standard-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .standard-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .standard-card:nth-child(1)::before { background: var(--blue); }
+    .standard-card:nth-child(2)::before { background: var(--teal); }
+    .standard-card:nth-child(3)::before { background: var(--green); }
+
+    .standard-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+
+    .standard-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .standard-card ul li {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      padding-left: 16px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .standard-card ul li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+    }
+
+    /* ─── Why Us ───────────────────────────────────────────── */
+    .section-why {
+      background: var(--off-white);
+      border-top: 4px solid var(--green);
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    .why-intro {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+
+    .why-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .why-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .why-list li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 800;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .why-callout {
+      background: linear-gradient(135deg, var(--blue), var(--teal));
+      color: #fff;
+      border-radius: 12px;
+      padding: 36px;
+    }
+
+    .why-callout h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .why-callout p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+
+    /* ─── Final CTA ────────────────────────────────────────── */
+    .section-cta {
+      background:
+        linear-gradient(135deg, rgba(61,157,214,0.72) 0%, rgba(46,196,182,0.72) 100%),
+        url('../img/baseball.png') top / cover;
+      color: #fff;
+      text-align: center;
+      padding: 96px 48px;
+    }
+
+    .section-cta p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      opacity: 0.9;
+      max-width: 560px;
+      margin: 0 auto 40px;
+    }
+
+    .section-cta p em {
+      font-style: normal;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+
+    .footer-logo {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    /* ─── Responsive ───────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .hero { padding: 64px 24px; min-height: auto; }
+      footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── Nav ──────────────────────────────────────────────────── -->
+<nav>
+  <a href="/" class="nav-logo">Sunshine <span>Technology Programs</span></a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="#mandate">The CMS Mandate</a></li>
+    <li><a href="#build">What We Build</a></li>
+    <li><a href="#standards">Standards</a></li>
+  </ul>
+  <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="nav-cta">Contact</a>
+</nav>
+
+<!-- ─── Hero ─────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">HL7 FHIR &middot; CMS Interoperability</div>
+    <h1>FHIR APIs for CMS Interoperability Compliance</h1>
+    <p>We build and stabilize HL7 FHIR R4 APIs — Patient Access, Provider Access, Payer-to-Payer, and Prior Authorization — for payers and the system integrators who serve them.</p>
+    <p class="tagline">The mandates are published. The deadlines are fixed. We help you ship compliant APIs.</p>
+    <div class="hero-actions">
+      <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="btn-primary">Schedule a Discussion</a>
+      <a href="#mandate" class="btn-secondary">Understand the Requirements</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── The Mandate ──────────────────────────────────────────── -->
+<section class="section-mandate" id="mandate">
+  <div class="section-inner">
+    <div class="section-label">The CMS Mandate</div>
+    <h2 class="section-header">Interoperability Is No Longer Optional</h2>
+    <p class="mandate-intro">CMS requires impacted payers — Medicare Advantage organizations, Medicaid and CHIP programs, and Qualified Health Plan issuers — to expose standards-based HL7 FHIR APIs.</p>
+    <p class="section-body">Two final rules define the obligation. The Interoperability and Patient Access rule (CMS-9115-F) established the Patient Access API requirement. The Interoperability and Prior Authorization rule (CMS-0057-F) extends it with Provider Access, Payer-to-Payer, and Prior Authorization APIs, with compliance dates beginning January&nbsp;1,&nbsp;2027.</p>
+    <div class="mandate-grid">
+
+      <div class="mandate-card">
+        <h3>Patient Access API</h3>
+        <div class="rule">CMS-9115-F &middot; CMS-0057-F</div>
+        <p>FHIR R4 API giving members access to claims, encounter data, and clinical data — extended under CMS-0057-F to include prior authorization decisions.</p>
+      </div>
+
+      <div class="mandate-card">
+        <h3>Provider Access API</h3>
+        <div class="rule">CMS-0057-F</div>
+        <p>In-network providers retrieve member claims, clinical data, and prior authorization information through a FHIR API with attribution and opt-out handling.</p>
+      </div>
+
+      <div class="mandate-card">
+        <h3>Payer-to-Payer API</h3>
+        <div class="rule">CMS-0057-F</div>
+        <p>When a member changes plans, their data follows them. Payers must exchange member data with other payers over FHIR, including bulk exchange at scale.</p>
+      </div>
+
+      <div class="mandate-card">
+        <h3>Provider Directory API</h3>
+        <div class="rule">CMS-9115-F</div>
+        <p>A public-facing FHIR API exposing provider directory data — names, network status, addresses, specialties — typically built on the Da&nbsp;Vinci Plan-Net implementation guide.</p>
+      </div>
+
+      <div class="mandate-card">
+        <h3>Prior Authorization API</h3>
+        <div class="rule">CMS-0057-F</div>
+        <p>Providers query coverage requirements, submit prior authorization requests, and receive decisions — with status and reasons — through FHIR APIs built on the Da&nbsp;Vinci CRD, DTR, and PAS implementation guides.</p>
+      </div>
+
+    </div>
+    <p class="mandate-footer">
+      Missing these deadlines is not a technical inconvenience — it is a compliance failure with regulatory and contractual consequences.<br><strong>The organizations that treat this as a serious data engineering problem will be the ones that ship on time.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ─── What We Build ────────────────────────────────────────── -->
+<section class="section-build" id="build">
+  <div class="section-inner">
+    <div class="section-label">What We Build</div>
+    <h2 class="section-header">FHIR Implementation, End to End</h2>
+    <p class="section-body">A compliant FHIR API is mostly not FHIR. It is the pipeline behind it: mapping claims, eligibility, and clinical data out of core administration systems into conformant resources — correctly, repeatably, and at scale.</p>
+    <div class="build-grid">
+
+      <div class="build-card">
+        <h3>HAPI FHIR Server Implementation</h3>
+        <ul>
+          <li>HAPI FHIR (JPA server) deployment and configuration</li>
+          <li>FHIR R4 resource modeling and profiling</li>
+          <li>Custom operations, search parameters, and interceptors</li>
+          <li>Performance tuning for member-scale workloads</li>
+        </ul>
+      </div>
+
+      <div class="build-card">
+        <h3>Data Mapping &amp; Conversion Pipelines</h3>
+        <ul>
+          <li>Claims and eligibility extracts to FHIR resources</li>
+          <li>X12 (837, 834, 278) to FHIR transformation</li>
+          <li>Terminology and code system mapping</li>
+          <li>Airflow-orchestrated, replayable ETL into the FHIR store</li>
+        </ul>
+      </div>
+
+      <div class="build-card">
+        <h3>Access, Consent &amp; Security</h3>
+        <ul>
+          <li>SMART on FHIR authorization flows</li>
+          <li>OAuth 2.0 / OpenID Connect integration</li>
+          <li>Member attribution, consent, and opt-out logic</li>
+          <li>Audit logging and access defensibility</li>
+        </ul>
+      </div>
+
+      <div class="build-card">
+        <h3>Bulk Data &amp; Payer Exchange</h3>
+        <ul>
+          <li>Bulk FHIR ($export) implementation</li>
+          <li>Payer-to-payer data exchange workflows</li>
+          <li>Large-scale backfill and reprocessing runs</li>
+          <li>Conformance testing against Inferno and Touchstone</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Standards ────────────────────────────────────────────── -->
+<section class="section-standards" id="standards">
+  <div class="section-inner">
+    <div class="section-label">Standards We Work In</div>
+    <h2 class="section-header">HL7 FHIR R4 and the Required Implementation Guides</h2>
+    <div class="standards-grid">
+
+      <div class="standard-card">
+        <h3>Core Standards</h3>
+        <ul>
+          <li>HL7 FHIR R4 (4.0.1)</li>
+          <li>US Core Implementation Guide</li>
+          <li>SMART App Launch Framework</li>
+          <li>Bulk Data Access (Flat FHIR)</li>
+        </ul>
+      </div>
+
+      <div class="standard-card">
+        <h3>Payer Implementation Guides</h3>
+        <ul>
+          <li>CARIN Blue Button (C4BB) for claims</li>
+          <li>Da Vinci PDex — payer data exchange</li>
+          <li>Da Vinci Plan-Net — provider directory</li>
+          <li>Da Vinci US Drug Formulary</li>
+        </ul>
+      </div>
+
+      <div class="standard-card">
+        <h3>Prior Authorization Guides</h3>
+        <ul>
+          <li>Da Vinci CRD — coverage requirements discovery</li>
+          <li>Da Vinci DTR — documentation templates and rules</li>
+          <li>Da Vinci PAS — prior authorization support</li>
+          <li>X12 278 integration where required</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── Why Us ────────────────────────────────────────────────── -->
+<section class="section-why" id="why">
+  <div class="section-inner">
+    <div class="section-label">Why Us</div>
+    <h2 class="section-header">This Is a Regulated Data Pipeline Problem</h2>
+    <div class="why-grid">
+      <div>
+        <p class="why-intro">FHIR compliance projects fail in the data layer, not the API layer. Standing up a HAPI FHIR server is the easy part — populating it correctly from claims, enrollment, and prior authorization systems is where deadlines slip. That data engineering is exactly what we do.</p>
+        <ul class="why-list">
+          <li>Deep experience with enrollment, eligibility, and adjudication data</li>
+          <li>Deterministic, replayable pipelines — built for audit defensibility</li>
+          <li>Airflow orchestration hardened for regulated workloads</li>
+          <li>Comfortable operating inside layered vendor chains</li>
+          <li>Senior capability, without heavy onboarding</li>
+        </ul>
+      </div>
+      <div class="why-callout">
+        <h3>How We Engage</h3>
+        <p>We support payers directly or subcontract under prime system integrators delivering compliance programs. Whether you need a full implementation, remediation of a struggling one, or senior capacity added to an existing team, we integrate quickly and focus on shipping conformant APIs before the deadline.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Final CTA ─────────────────────────────────────────────── -->
+<section class="section-cta" id="cta">
+  <p>
+    The compliance dates are set,<br>
+    and the implementation guides are published.<br>
+    <em>Let's talk about your FHIR roadmap.</em>
+  </p>
+  <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="btn-primary">Schedule a Discussion</a>
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">Sunshine Technology Programs LLC</div>
+  <div>American-Owned &nbsp;·&nbsp; U.S. Based &nbsp;·&nbsp; Contract-Ready &nbsp;·&nbsp; Vendor-Chain Aware</div>
+</footer>
+
+</body>
+</html>
