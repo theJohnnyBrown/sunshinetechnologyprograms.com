@@ -82,6 +82,29 @@
 
     .nav-cta:hover { background: #d06820; }
 
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: 0;
+      padding: 8px;
+      margin-right: -8px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      margin: 5px 0;
+      background: var(--dark);
+      border-radius: 1px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+    nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* ─── Hero ─────────────────────────────────────────────── */
     .hero {
       background: url('img/sunshine_hero.jpg') center 65% / cover no-repeat;
@@ -644,9 +667,34 @@
       .why-grid { grid-template-columns: 1fr; }
     }
 
+    @media (max-width: 1100px) {
+      nav { gap: 12px; }
+      .nav-cta { margin-left: auto; white-space: nowrap; }
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 3px;
+        flex-direction: column;
+        gap: 0;
+        padding: 8px 48px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+        font-size: 0.95rem;
+      }
+      nav.open .nav-links { display: flex; }
+      .nav-links a { display: block; padding: 12px 0; }
+    }
+
     @media (max-width: 768px) {
       nav { padding: 0 24px; }
-      .nav-links { display: none; }
+      .nav-links { padding: 8px 24px; }
+      .nav-logo { font-size: 0.9rem; line-height: 1.25; }
+      .nav-logo span { display: block; }
       section { padding: 60px 24px; }
       .hero { padding: 64px 24px; min-height: auto; }
       .photo-strip { height: 200px; }
@@ -659,14 +707,18 @@
 <!-- ─── Nav ──────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-logo">Sunshine <span>Technology Programs</span></div>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="#serve">Who We Serve</a></li>
     <li><a href="#problems">Problems We Solve</a></li>
     <li><a href="#services">What We Do</a></li>
     <li><a href="fhir/">FHIR APIs</a></li>
+    <li><a href="knowledge-graphs/">Knowledge Graphs</a></li>
     <li><a href="#engagement">Engagement</a></li>
   </ul>
   <a href="https://calendly.com/sunshinetechnologyprograms/30min" target="_blank" rel="noopener" class="nav-cta">Contact</a>
+  <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- ─── Hero ─────────────────────────────────────────────────── -->
@@ -799,6 +851,7 @@
           <li>Cloud-native distributed systems</li>
           <li>Enterprise API integration</li>
           <li><a href="fhir/" style="color:var(--blue); font-weight:600;">HL7 FHIR APIs for CMS interoperability</a></li>
+          <li><a href="knowledge-graphs/" style="color:var(--blue); font-weight:600;">RDF databases, ontologies, and knowledge graphs</a></li>
         </ul>
         <p style="margin-top:20px; font-size:0.82rem; color:var(--text-muted); font-style:italic;">
           We provide scarce senior capability where execution risk is high.
@@ -893,6 +946,21 @@
   </div>
   <div>American-Owned &nbsp;·&nbsp; U.S. Based &nbsp;·&nbsp; Contract-Ready &nbsp;·&nbsp; Vendor-Chain Aware</div>
 </footer>
+
+<script>
+  (function () {
+    var nav = document.querySelector('nav');
+    var toggle = nav.querySelector('.nav-toggle');
+    function setOpen(open) {
+      nav.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    }
+    toggle.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+    nav.querySelector('.nav-links').addEventListener('click', function (e) {
+      if (e.target.closest('a')) setOpen(false);
+    });
+  })();
+</script>
 
 </body>
 </html>
